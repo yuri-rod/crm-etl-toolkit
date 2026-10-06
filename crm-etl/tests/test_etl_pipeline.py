@@ -328,25 +328,27 @@ class TestETLPipeline:
         # Convert DataFrame to records
         records = df.to_dict('records')
         
-        # Generate summary statistics
+        # Generate summary statistics (only for columns present)
         summary_stats = {
-            'age_stats': {
+            'category_distribution': df['category'].value_counts().to_dict() if 'category' in df.columns else {},
+            'city_distribution': df['city'].value_counts().to_dict() if 'city' in df.columns else {},
+            'segment_distribution': df['customer_segment'].value_counts().to_dict() if 'customer_segment' in df.columns else {}
+        }
+        if 'age' in df.columns:
+            summary_stats['age_stats'] = {
                 'mean': float(df['age'].mean()),
                 'median': float(df['age'].median()),
                 'min': int(df['age'].min()),
                 'max': int(df['age'].max())
-            },
-            'purchase_value_stats': {
+            }
+        if 'purchase_value' in df.columns:
+            summary_stats['purchase_value_stats'] = {
                 'mean': float(df['purchase_value'].mean()),
                 'median': float(df['purchase_value'].median()),
                 'min': float(df['purchase_value'].min()),
                 'max': float(df['purchase_value'].max()),
                 'total': float(df['purchase_value'].sum())
-            },
-            'category_distribution': df['category'].value_counts().to_dict(),
-            'city_distribution': df['city'].value_counts().to_dict(),
-            'segment_distribution': df['customer_segment'].value_counts().to_dict() if 'customer_segment' in df.columns else {}
-        }
+            }
         
         # Create structured output
         json_output = {
