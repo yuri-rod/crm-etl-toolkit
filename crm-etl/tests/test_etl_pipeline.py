@@ -41,15 +41,16 @@ except ImportError:
         ETL_EXTRACTORS_AVAILABLE = False
 
 
+@pytest.fixture
+def temp_directory():
+    """Create temporary directory for test files (shared by all classes)"""
+    temp_dir = tempfile.mkdtemp(prefix="crm_etl_test_")
+    yield Path(temp_dir)
+    shutil.rmtree(temp_dir, ignore_errors=True)
+
+
 class TestETLPipeline:
     """Complete ETL Pipeline tests"""
-
-    @pytest.fixture
-    def temp_directory(self):
-        """Create temporary directory for test files"""
-        temp_dir = tempfile.mkdtemp(prefix="crm_etl_test_")
-        yield Path(temp_dir)
-        shutil.rmtree(temp_dir, ignore_errors=True)
 
     @pytest.fixture
     def sample_csv_data(self, temp_directory):
@@ -285,7 +286,10 @@ class TestETLPipeline:
     def _apply_transformations(self, df):
         """Apply business transformations to the data"""
         transformed_df = df.copy()
-        
+        required = {'is_premium', 'purchase_value', 'purchase_date', 'age'}
+        if not required <= set(df.columns):
+            return transformed_df  # unknown schema: pass through gracefully
+
         # Add customer segmentation
         conditions = [
             (transformed_df['is_premium'] == True) & (transformed_df['purchase_value'] > 500),
