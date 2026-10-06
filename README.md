@@ -46,13 +46,16 @@ python start_crm_system.py --test   # smoke: imports + pipeline wiring
 ```
 
 Playwright e2e specs live under `www/tests/e2e/` (needs `pip install
-playwright` plus `playwright install`).
+playwright` plus `playwright install`). CI runs the self-contained
+pipeline suite; backend and frontend suites need a live server.
 
 ## Notes
 
 - Sample and test workbooks ship with the tree (`www/test_data/`,
   `output/`); brand art was removed, so the UI references a logo file
   you must supply (`www/static/img/`).
+- Four legacy scripts were truncated at the source and are excluded
+  from this repo.
 - CI runs a syntax compile plus a secret-pattern scan on every push.
 
 ## License
