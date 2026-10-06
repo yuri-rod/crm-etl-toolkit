@@ -1,0 +1,10 @@
+# Hero Logo Placeholder
+
+This file represents where the hero section logo should be placed:
+- Filename: crm-logo.svg
+- Location: static/img/
+- Usage: Hero section main logo
+- Recommended size: Max width 200px (responsive)
+- Format: SVG (scalable vector graphics)
+
+Replace this placeholder with the actual SVG image file.

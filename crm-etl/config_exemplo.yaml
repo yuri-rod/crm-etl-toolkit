@@ -1,0 +1,145 @@
+# Configuração de Exemplo para Pipeline ETL com IA
+# CRM ETL
+
+pipeline:
+  name: "Pipeline_CRM_Producao"
+  description: "Pipeline de produção para análise de dados de leads e clientes"
+  mode: "batch"  # batch, streaming, real_time, hybrid
+  data_type: "structured"  # structured, semi_structured, unstructured, multimodal
+  ai_enabled: true
+  auto_repair: true
+  monitoring_enabled: true
+  parallel_workers: 4
+  chunk_size: 10000
+  
+  # Transformações customizadas
+  custom_transformations:
+    - "Filtrar registros com qualidade alta"
+    - "Criar score de engajamento baseado em atividade"
+    - "Normalizar dados de contato"
+
+ai_models:
+  # Configurações de APIs de IA
+  claude_api_key: null  # Definir via variável de ambiente ANTHROPIC_API_KEY
+  openai_api_key: null  # Definir via variável de ambiente OPENAI_API_KEY
+  
+  # Modelos locais (opcional)
+  local_model_path: "./models/"
+  use_local_models: false
+  
+  # Configurações de geração
+  max_tokens: 2048
+  temperature: 0.7
+
+# Configurações específicas do negócio
+business_rules:
+  # Campos obrigatórios para qualidade de dados
+  required_fields:
+    - "nome"
+    - "email"
+    - "telefone"
+  
+  # Regras de validação
+  validation_rules:
+    email_pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+    phone_pattern: "^\\+?55\\d{10,11}$"
+    cpf_validation: true
+    cnpj_validation: true
+  
+  # Configurações de deduplicação
+  deduplication:
+    key_fields:
+      - "cpf"
+      - "cnpj"
+      - "email"
+    similarity_threshold: 0.85
+
+# Fontes de dados configuradas
+data_sources:
+  # Exemplo de fonte CSV
+  leads_csv:
+    type: "file"
+    path: "./data/leads.csv"
+    format: "csv"
+    encoding: "utf-8"
+    separator: ";"
+  
+  # Exemplo de banco de dados
+  crm_database:
+    type: "database"
+    connection_string: "postgresql://user:password@localhost:5432/crm"
+    table: "leads"
+    query: "SELECT * FROM leads WHERE created_at >= NOW() - INTERVAL '30 days'"
+  
+  # Exemplo de API
+  external_api:
+    type: "api"
+    url: "https://api.exemplo.com/leads"
+    headers:
+      Authorization: "Bearer TOKEN"
+      Content-Type: "application/json"
+    params:
+      limit: 1000
+      status: "active"
+
+# Configurações de saída
+output:
+  # Formato padrão
+  default_format: "excel"
+  
+  # Configurações por formato
+  csv:
+    encoding: "utf-8-sig"
+    separator: ";"
+    include_index: false
+  
+  excel:
+    engine: "openpyxl"
+    include_metadata_sheet: true
+    auto_format: true
+  
+  parquet:
+    compression: "snappy"
+    index: false
+
+# Configurações de monitoramento
+monitoring:
+  # Métricas a serem coletadas
+  metrics:
+    - "processing_time"
+    - "memory_usage"
+    - "cpu_usage"
+    - "data_quality_score"
+    - "error_count"
+  
+  # Alertas
+  alerts:
+    high_memory_threshold: 85  # %
+    high_cpu_threshold: 90     # %
+    max_processing_time: 3600  # segundos
+  
+  # Log level
+  log_level: "INFO"
+
+# Configurações específicas do CRM
+crm_config:
+  # Cores da marca
+  brand_colors:
+    primary: "#1b2942"    # cmyk: 97 81 44 50
+    secondary: "#404f9d"  # cmyk: 86 73 00
+    accent1: "#03b2cd"    # cmyk: 73 3 19 00
+    accent2: "#702784"    # cmyk: 112 39 132
+  
+  # Configurações de relatórios
+  reports:
+    language: "pt_BR"
+    date_format: "%d/%m/%Y"
+    number_format: "pt_BR"
+    include_brand_logo: true
+    
+  # Metadados do projeto
+  project:
+    name: "CRM ETL"
+    description: "Plataforma de análise de dados para nova economia"
+    version: "1.0.0"
+    contact: "tech@crm.com.br"

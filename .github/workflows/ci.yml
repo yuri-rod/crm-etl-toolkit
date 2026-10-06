@@ -1,0 +1,26 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile all Python files
+        run: python -m compileall -q crm-etl bkp-pipeline crm-pipelines
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secret-pattern scan
+        run: |
+          hits=$(grep -rniE 'password\s*=\s*["'"'"'][^"'"'"']+|api[_-]?key\s*=\s*["'"'"'][^"'"'"']+|secret\s*=\s*["'"'"'][^"'"'"']+|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|mongodb(\+srv)?://[^ ]+:[^ ]+@|postgres(ql)?://[^ ]+:[^ ]+@' \
+            crm-etl bkp-pipeline crm-pipelines --include='*.py' | \
+            grep -viE 'sua_chave|your|test|example|placeholder|fallback-key|getenv|environ|os\.get|\.get\(' || true)
+          if [ -n "$hits" ]; then echo "$hits"; exit 1; fi
+          echo "no secret patterns"

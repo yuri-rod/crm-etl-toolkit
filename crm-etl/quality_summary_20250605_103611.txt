@@ -1,0 +1,117 @@
+DATA QUALITY ASSURANCE SUMMARY REPORT
+==================================================
+
+Report Generated: 2025-06-05 10:36:11
+
+OVERALL STATISTICS:
+--------------------
+Total Errors: 0
+Total Warnings: 43
+Total Actions Performed: 38
+
+STATISTICS FOR CONSOLIDATED_DATAFRAME:
+------------------------------
+Original Rows: 645
+Original Columns: 30
+Missing Values Filled: 1189
+Missing Values Flagged: 2542
+Dates Standardized: 2429
+Phones Standardized: 638
+Cpf Standardized: 623
+Cnpj Standardized: 308
+Rg Standardized: 645
+Categorical Normalized: 190
+Emails Validated: 630
+Duplicates Removed: 30
+Type Casts Performed: 5
+
+WARNINGS:
+----------
+• Invalid email format: completed
+• Invalid email format: completed
+• Invalid email format: completed
+• Invalid email format: pessoa jurídica
+• Invalid email format: 01 - 50
+• Invalid email format: 01 - 50
+• Invalid email format: 01 - 50
+• Invalid email format: ceo
+• Invalid email format: aperfeiçoar meu conhecimen sobre o mundo do equity, e tentar sair com a melhor solução para nossa holding de participação pensado em novas rodadas de investimentos.
+• Invalid email format: identificar oportunidades
+agragar o meio de educação para meus cliente de forma direta ou indireta por sites/apps/profissionais
+como criar uma empresa para ser vendida
+network para trocar cartas e poder expor as milhares de ideias que tenho que fazem ou nao sentido para mim, mas pode ajudar outros empresarios
+como capacitar talentos
+• Invalid email format: 01 - 50
+• Invalid email format: 01 - 50
+• Invalid email format: pessoa jurídica
+• Duplicate record found: Marcio Esher - marcio.esher@holdingclube.com.br
+• Duplicate record found: Diego Locci - diego@scooto.co
+• Duplicate record found: Junior Duarte Araujo - junior@uniquenail.com.br
+• Duplicate record found: Maria Graziela Fetz - graziela@fetz.com.br
+• Duplicate record found: Wasley Costa Cruz - wasleyjunior8@gmail.com
+• Duplicate record found: Janaine Valéria Ribeiro Do Carmo - advjanaineribeiro@hotmail.com
+• Duplicate record found: Rodrigo Ficagna - rodrigoficagna@gmail.com
+• Duplicate record found: Hélida Dantas - helida.fama@hotmail.com
+• Duplicate record found: Henderson Rodrigues - hendersonsrodrigues@gmail.com
+• Duplicate record found: Luana Teixeira Amorim - financeiro@tutts.com.br
+• Duplicate record found: Alessandro Dal Piva - alessandro@dallconsolucoes.com.br
+• Duplicate record found: Ricardo Polloni Pinto Cruz - ricardo.cruz@bnew.co
+• Duplicate record found: Alberto Couto - alberto@albertocouto.com.br
+• Duplicate record found: Rafaela Rocha França Dumont - rafaelafranca@itadvisory.com.br
+• Duplicate record found: George Eich - george@vinners.com.br
+• Duplicate record found: William Ramos Reolon - william@kopus.com.br
+• Duplicate record found: Alysson De Andrade Rodrigues - masporsteventos@hotmail.com
+• Duplicate record found: Michelle Iung Saling Rodrigues - michellero80@hotmail.com
+• Duplicate record found: Jorge Azevedo - 1@jorgeazevedo.com
+• Duplicate record found: Joao Paulo Serra Guimarães - joaoguim012@gmail.com
+• Duplicate record found: João Victor Simões Cavalcanti - simoesjvictor@gmail.com
+• Duplicate record found: Gunnar Gaspar Velloso Viana - gunnar.viana@traad.com.br
+• Duplicate record found: Erick Leite Nunez - erick@tagcontabilidade.com.br
+• Duplicate record found: Felipe Henrique Eiras - felipe@ctstur.com.br
+• Duplicate record found: Paulo Amaral Fonseca - pauloamaralfonseca@gmail.com
+• Duplicate record found: Bianca Mota Dos Santos - core_orto.estetica@yahoo.com.br
+• Duplicate record found: Isaac Araujo - isaac@brandership.com.br
+• Duplicate record found: Jeferson Schimite Soares - jeferson@startlaser.com.br
+• Duplicate record found: Renato Yun - renatoyun@gmail.com
+• Duplicate record found: Cintia De Freitas - cintia.gontijo@dattabusiness.com.br
+
+ACTIONS PERFORMED:
+------------------
+• Filled 1 missing values in cpf with 'N/A'
+• Filled 305 missing values in cnpj with 'N/A'
+• Filled 1 missing values in rg with 'N/A'
+• Filled 2 missing values in email with 'nao_informado@placeholder.com'
+• Filled 1 missing values in whatsapp with '+55000000000'
+• Filled 2 missing values in estado_civil with 'Não Informado'
+• Filled 141 missing values in emissao_nota_fiscal with 'Não Informado'
+• Filled 14 missing values in autorizacao_imagem with '0'
+• Filled 3 missing values in data_nascimento with '01/01/1900'
+• Filled 1 missing values in endereco with 'Não Informado'
+• Filled 4 missing values in cidade_estado with 'Não Informado'
+• Filled 5 missing values in empresa_nome with 'Não Informado'
+• Filled 6 missing values in segmento_atuacao with 'Não Informado'
+• Filled 8 missing values in linkedin with 'Não Informado'
+• Filled 53 missing values in objetivo_aprendizado with 'Não Informado'
+• Filled 177 missing values in cargo_atual with 'Não Informado'
+• Filled 153 missing values in dores_empresa with 'Não Informado'
+• Filled 153 missing values in faixa_funcionarios with 'Não Informado'
+• Filled 159 missing values in faixa_faturamento with 'Não Informado'
+• Standardized 524 dates in data_nascimento
+• Standardized 630 dates in start_date
+• Standardized 630 dates in submit_date
+• Standardized 645 dates in concatenation_timestamp
+• Standardized 638 phone numbers in whatsapp
+• Standardized 623 CPF numbers
+• Standardized 308 CNPJ numbers
+• Standardized 645 RG numbers
+• Normalized 190 Estado Civil values
+• Cleaned 214 text entries in nome_completo
+• Cleaned 83 text entries in nome_cracha
+• Cleaned 530 text entries in endereco
+• Cleaned 473 text entries in cidade_estado
+• Cleaned 363 text entries in empresa_nome
+• Cleaned 357 text entries in segmento_atuacao
+• Cleaned 554 text entries in objetivo_aprendizado
+• Validated 630 emails, flagged 13 as invalid
+• Removed 30 duplicate records
+• Performed 5 type casts

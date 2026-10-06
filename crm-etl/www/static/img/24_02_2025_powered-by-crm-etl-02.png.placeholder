@@ -1,0 +1,10 @@
+# Footer Logo Placeholder
+
+This file represents where the footer branding image should be placed:
+- Filename: 24_02_2025_powered-by-crm-etl-02.png
+- Location: static/img/
+- Usage: Footer branding/powered by logo
+- Recommended size: Max width 300px (responsive)
+- Format: PNG with transparency support
+
+Replace this placeholder with the actual PNG image file.

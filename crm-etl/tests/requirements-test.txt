@@ -1,0 +1,58 @@
+# CRM ETL Test Suite Requirements
+# ================================
+
+# Core testing framework
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-html>=3.2.0
+pytest-xdist>=3.3.0  # For parallel testing
+pytest-timeout>=2.1.0
+
+# HTTP client for API testing
+httpx>=0.24.0
+
+# Data processing for ETL tests
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Frontend testing (optional)
+pytest-playwright>=0.4.0
+# Note: After installing pytest-playwright, run: playwright install
+
+# Mock and fixtures
+pytest-mock>=3.11.0
+responses>=0.23.0  # For mocking HTTP requests
+
+# Test data generation
+faker>=19.0.0
+
+# Performance and memory testing
+pytest-benchmark>=4.0.0
+memory-profiler>=0.61.0
+
+# Additional utilities
+freezegun>=1.2.2  # For mocking datetime
+pytest-env>=0.8.2  # For environment variable management
+
+# Optional: Advanced testing tools
+# pytest-sugar>=0.9.7  # Better test output
+# pytest-clarity>=1.0.1  # Better assertion messages
+# pytest-picked>=0.4.6  # Run tests related to changed files
+
+# Installation instructions:
+# 1. Basic testing:
+#    pip install pytest pytest-asyncio httpx pandas numpy
+#
+# 2. Full test suite:
+#    pip install -r tests/requirements-test.txt
+#
+# 3. Playwright setup (for frontend tests):
+#    pip install pytest-playwright
+#    playwright install
+#
+# 4. Run tests:
+#    pytest tests/ -v
+#    pytest tests/test_backend_endpoints.py -v
+#    pytest tests/test_etl_pipeline.py -v
+#    pytest tests/test_frontend_links.py -v

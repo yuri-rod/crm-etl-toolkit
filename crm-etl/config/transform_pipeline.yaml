@@ -1,0 +1,215 @@
+# Configuração do Pipeline de Transformação
+# ==========================================
+# Este arquivo define as etapas de transformação, validação e feature engineering
+# para o pipeline de qualificação de leads
+
+pipeline:
+  name: "Pipeline de Transformação de Leads"
+  version: "1.0.0"
+  description: "Pipeline configurável para transformação e validação de dados de leads brasileiros"
+  
+# Etapas do pipeline (executadas em ordem)
+stages:
+  - name: "validacao_inicial"
+    type: "validation"
+    enabled: true
+    config:
+      fail_on_error: false
+      report_errors: true
+      validations:
+        - field: "cpf"
+          validator: "cpf_brasileiro"
+          required: true
+        - field: "cnpj"
+          validator: "cnpj_brasileiro"
+          required: false
+        - field: "email"
+          validator: "email"
+          required: true
+        - field: "whatsapp"
+          validator: "telefone_brasileiro"
+          required: true
+        - field: "cep"
+          validator: "cep_brasileiro"
+          required: false
+          
+  - name: "normalizacao_texto"
+    type: "text_normalization"
+    enabled: true
+    config:
+      fields:
+        - field: "nome_completo"
+          operations:
+            - "remove_extra_spaces"
+            - "capitalize_names"
+            - "remove_special_chars"
+        - field: "empresa_nome"
+          operations:
+            - "remove_extra_spaces"
+            - "uppercase"
+        - field: "endereco"
+          operations:
+            - "remove_extra_spaces"
+            - "capitalize_words"
+        - field: "cidade_estado"
+          operations:
+            - "remove_extra_spaces"
+            - "extract_state"
+            
+  - name: "padronizacao_formatos"
+    type: "format_standardization"
+    enabled: true
+    config:
+      formatters:
+        - field: "cpf"
+          formatter: "cpf"
+        - field: "cnpj"
+          formatter: "cnpj"
+        - field: "whatsapp"
+          formatter: "telefone"
+        - field: "cep"
+          formatter: "cep"
+        - field: "data_nascimento"
+          formatter: "data_br"
+          
+  - name: "feature_engineering"
+    type: "feature_creation"
+    enabled: true
+    config:
+      features:
+        - name: "idade"
+          type: "age_from_date"
+          source_field: "data_nascimento"
+          
+        - name: "score_completude"
+          type: "completeness_score"
+          fields_weights:
+            nome_completo: 10
+            cpf: 10
+            email: 10
+            whatsapp: 10
+            empresa_nome: 8
+            cargo_atual: 8
+            segmento_atuacao: 6
+            linkedin: 5
+            endereco: 5
+            cidade_estado: 5
+            
+        - name: "categoria_empresa"
+          type: "categorize"
+          source_field: "faixa_funcionarios"
+          categories:
+            microempresa: ["1-9", "10-19"]
+            pequena: ["20-49", "50-99"]
+            media: ["100-249", "250-499"]
+            grande: ["500-999", "1000+"]
+            
+        - name: "potencial_faturamento"
+          type: "categorize"
+          source_field: "faixa_faturamento"
+          categories:
+            baixo: ["Até R$ 360 mil", "R$ 360 mil a R$ 4,8 milhões"]
+            medio: ["R$ 4,8 milhões a R$ 50 milhões"]
+            alto: ["R$ 50 milhões a R$ 300 milhões", "Acima de R$ 300 milhões"]
+            
+        - name: "tipo_documento"
+          type: "conditional"
+          condition: "cpf is not null and cnpj is null"
+          true_value: "pessoa_fisica"
+          false_value: "pessoa_juridica"
+          
+        - name: "estado"
+          type: "extract"
+          source_field: "cidade_estado"
+          extractor: "estado_brasileiro"
+          
+        - name: "tempo_resposta_minutos"
+          type: "time_difference"
+          start_field: "start_date"
+          end_field: "submit_date"
+          unit: "minutes"
+          
+  - name: "qualificacao_leads"
+    type: "lead_scoring"
+    enabled: true
+    config:
+      scoring_rules:
+        - name: "score_dados_pessoais"
+          max_score: 25
+          criteria:
+            - field: "cpf"
+              condition: "valid"
+              points: 10
+            - field: "email"
+              condition: "valid"
+              points: 10
+            - field: "whatsapp"
+              condition: "valid"
+              points: 5
+              
+        - name: "score_profissional"
+          max_score: 35
+          criteria:
+            - field: "cargo_atual"
+              condition: "contains"
+              values: ["diretor", "gerente", "ceo", "cto", "cfo", "presidente", "sócio"]
+              points: 15
+            - field: "linkedin"
+              condition: "not_null"
+              points: 10
+            - field: "categoria_empresa"
+              condition: "in"
+              values: ["media", "grande"]
+              points: 10
+              
+        - name: "score_potencial"
+          max_score: 40
+          criteria:
+            - field: "potencial_faturamento"
+              condition: "equals"
+              value: "alto"
+              points: 20
+            - field: "potencial_faturamento"
+              condition: "equals"
+              value: "medio"
+              points: 10
+            - field: "objetivo_aprendizado"
+              condition: "length_greater_than"
+              value: 50
+              points: 10
+              
+  - name: "data_quality_check"
+    type: "quality_validation"
+    enabled: true
+    config:
+      checks:
+        - type: "duplicate_detection"
+          key_fields: ["cpf", "email"]
+        - type: "consistency_check"
+          rules:
+            - fields: ["cpf", "cnpj"]
+              rule: "not_both_present"
+        - type: "completeness_check"
+          required_fields: ["nome_completo", "email"]
+          
+# Configurações de relatório
+reporting:
+  enabled: true
+  output_format: ["json", "html", "csv"]
+  include_sections:
+    - validation_summary
+    - transformation_stats
+    - quality_metrics
+    - lead_distribution
+  save_path: "reports/transform_report_{timestamp}"
+  
+# Configurações de erro e logging
+error_handling:
+  log_level: "INFO"
+  save_errors: true
+  error_file: "logs/transform_errors_{timestamp}.log"
+  max_errors_before_fail: 100
+  
+# Mapeamento de colunas (referência ao arquivo existente)
+column_mapping:
+  config_file: "column_mapping_config.json"

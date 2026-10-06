@@ -1,0 +1,184 @@
+DATA CLEANING REPORT
+==================================================
+
+DataFrame: Base_JE01
+------------------------------
+Line Breaks Fixed: 6
+Malformed Entries Fixed: 13
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 3
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE02
+------------------------------
+Line Breaks Fixed: 2
+Malformed Entries Fixed: 47
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 1
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE03
+------------------------------
+Line Breaks Fixed: 5
+Malformed Entries Fixed: 13
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 0
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE04
+------------------------------
+Line Breaks Fixed: 3
+Malformed Entries Fixed: 11
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 3
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE05
+------------------------------
+Line Breaks Fixed: 0
+Malformed Entries Fixed: 48
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 0
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE06
+------------------------------
+Line Breaks Fixed: 3
+Malformed Entries Fixed: 31
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 2
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE07
+------------------------------
+Line Breaks Fixed: 3
+Malformed Entries Fixed: 26
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 2
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE08
+------------------------------
+Line Breaks Fixed: 4
+Malformed Entries Fixed: 40
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 1
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE09
+------------------------------
+Line Breaks Fixed: 14
+Malformed Entries Fixed: 74
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 6
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE10
+------------------------------
+Line Breaks Fixed: 5
+Malformed Entries Fixed: 50
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 2
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE11
+------------------------------
+Line Breaks Fixed: 0
+Malformed Entries Fixed: 24
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 1
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE12
+------------------------------
+Line Breaks Fixed: 9
+Malformed Entries Fixed: 78
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 0
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE13
+------------------------------
+Line Breaks Fixed: 8
+Malformed Entries Fixed: 43
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 0
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE14_1
+------------------------------
+Line Breaks Fixed: 7
+Malformed Entries Fixed: 19
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 4
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE14
+------------------------------
+Line Breaks Fixed: 7
+Malformed Entries Fixed: 19
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 4
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE15
+------------------------------
+Line Breaks Fixed: 10
+Malformed Entries Fixed: 33
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 3
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE16
+------------------------------
+Line Breaks Fixed: 4
+Malformed Entries Fixed: 14
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 1
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+DataFrame: Base_JE17_incompleta
+------------------------------
+Line Breaks Fixed: 2
+Malformed Entries Fixed: 35
+Whitespace Trimmed: 0
+Encoding Issues Fixed: 0
+Delimiter Issues Fixed: 2
+Empty Rows Removed: 0
+Duplicate Rows Removed: 0
+
+Total issues fixed: 745

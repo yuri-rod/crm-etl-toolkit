@@ -1,0 +1,382 @@
+name: E2E Tests - Sistema ETL Inteligente
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Executa diariamente às 02:00 UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Suite de testes para executar'
+        required: false
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - regression
+          - mobile
+          - all
+      browser:
+        description: 'Browser para usar'
+        required: false
+        default: 'chromium'
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
+          - all
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '18'
+  BASE_URL: 'http://localhost:8000'
+  HEADLESS: 'true'
+  CI: 'true'
+
+jobs:
+  # Job para validações rápidas
+  quick-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          
+      - name: Instalar dependências básicas
+        run: |
+          pip install --upgrade pip
+          pip install -r tests/e2e/requirements.txt
+          
+      - name: Instalar Playwright browsers
+        run: |
+          playwright install chromium --with-deps
+          
+      - name: Validar arquivos de teste
+        run: |
+          python -m pytest tests/e2e/ --collect-only -v
+          
+      - name: Verificar sintaxe dos page objects
+        run: |
+          python -c "from tests.e2e.pages import ETLPage; print('✅ Page objects válidos')"
+
+  # Job principal para testes smoke
+  smoke-tests:
+    needs: quick-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          
+      - name: Instalar dependências Python
+        run: |
+          pip install --upgrade pip
+          pip install -r tests/e2e/requirements.txt
+          pip install pandas fastapi uvicorn python-multipart
+          
+      - name: Instalar Playwright browsers
+        run: |
+          playwright install ${{ matrix.browser }} --with-deps
+          
+      - name: Criar diretórios necessários
+        run: |
+          mkdir -p reports screenshots production_models logs data/input data/output temp
+          
+      - name: Executar testes smoke
+        run: |
+          cd tests/e2e
+          python -m pytest test_smoke.py \
+            --browser=${{ matrix.browser }} \
+            --headed=false \
+            --html=../../reports/smoke-report-${{ matrix.browser }}.html \
+            --self-contained-html \
+            -v \
+            --tb=short
+            
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: smoke-test-reports-${{ matrix.browser }}
+          path: |
+            reports/
+            screenshots/
+          retention-days: 30
+
+  # Job para testes de regressão (apenas Chromium para economizar tempo)
+  regression-tests:
+    needs: smoke-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'regression-tests')
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          
+      - name: Instalar dependências
+        run: |
+          pip install --upgrade pip
+          pip install -r tests/e2e/requirements.txt
+          pip install pandas fastapi uvicorn python-multipart openpyxl
+          
+      - name: Instalar Playwright
+        run: |
+          playwright install chromium --with-deps
+          
+      - name: Preparar ambiente
+        run: |
+          mkdir -p reports screenshots production_models logs data/input data/output temp
+          
+      - name: Executar testes de regressão
+        run: |
+          cd tests/e2e
+          python -m pytest test_full_pipeline.py \
+            --browser=chromium \
+            --headed=false \
+            --html=../../reports/regression-report.html \
+            --self-contained-html \
+            -v \
+            --tb=short \
+            --maxfail=3
+            
+      - name: Upload artifacts de regressão
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: regression-test-reports
+          path: |
+            reports/
+            screenshots/
+          retention-days: 30
+
+  # Job para testes móveis
+  mobile-tests:
+    needs: quick-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    if: contains(github.event.head_commit.message, '[mobile]') || github.event.inputs.test_suite == 'mobile' || github.event.inputs.test_suite == 'all'
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          
+      - name: Instalar dependências
+        run: |
+          pip install --upgrade pip
+          pip install -r tests/e2e/requirements.txt
+          pip install pandas fastapi uvicorn python-multipart
+          
+      - name: Instalar Playwright
+        run: |
+          playwright install chromium --with-deps
+          
+      - name: Preparar ambiente
+        run: |
+          mkdir -p reports screenshots production_models logs data/input data/output temp
+          
+      - name: Executar testes móveis
+        run: |
+          cd tests/e2e
+          python -m pytest test_responsive.py \
+            --browser=chromium \
+            --headed=false \
+            --html=../../reports/mobile-report.html \
+            --self-contained-html \
+            -v \
+            --tb=short \
+            -m mobile
+            
+      - name: Upload artifacts móveis
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: mobile-test-reports
+          path: |
+            reports/
+            screenshots/
+          retention-days: 30
+
+  # Job para execução completa (manual ou scheduled)
+  full-test-suite:
+    if: github.event_name == 'schedule' || github.event.inputs.test_suite == 'all'
+    needs: quick-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        browser: [chromium, firefox]
+        test-type: [smoke, regression, mobile]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          
+      - name: Instalar dependências completas
+        run: |
+          pip install --upgrade pip
+          pip install -r tests/e2e/requirements.txt
+          pip install pandas fastapi uvicorn python-multipart openpyxl xlrd
+          
+      - name: Instalar Playwright
+        run: |
+          playwright install ${{ matrix.browser }} --with-deps
+          
+      - name: Preparar ambiente
+        run: |
+          mkdir -p reports screenshots production_models logs data/input data/output temp
+          
+      - name: Executar suite completa
+        run: |
+          cd tests/e2e
+          case "${{ matrix.test-type }}" in
+            "smoke")
+              python -m pytest test_smoke.py --browser=${{ matrix.browser }} --headed=false --html=../../reports/full-smoke-${{ matrix.browser }}.html --self-contained-html -v
+              ;;
+            "regression")
+              python -m pytest test_full_pipeline.py --browser=${{ matrix.browser }} --headed=false --html=../../reports/full-regression-${{ matrix.browser }}.html --self-contained-html -v --tb=short
+              ;;
+            "mobile")
+              python -m pytest test_responsive.py --browser=${{ matrix.browser }} --headed=false --html=../../reports/full-mobile-${{ matrix.browser }}.html --self-contained-html -v -m mobile
+              ;;
+          esac
+          
+      - name: Upload full suite artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: full-suite-${{ matrix.test-type }}-${{ matrix.browser }}
+          path: |
+            reports/
+            screenshots/
+          retention-days: 30
+
+  # Job para relatório consolidado
+  consolidate-results:
+    if: always()
+    needs: [smoke-tests, regression-tests, mobile-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download todos os artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: all-reports
+          
+      - name: Consolidar relatórios
+        run: |
+          echo "# 📊 Relatório Consolidado E2E Tests" > test-summary.md
+          echo "## 🚀 Sistema ETL Inteligente - CRM Tools" >> test-summary.md
+          echo "" >> test-summary.md
+          echo "**Data:** $(date)" >> test-summary.md
+          echo "**Commit:** ${{ github.sha }}" >> test-summary.md
+          echo "**Branch:** ${{ github.ref_name }}" >> test-summary.md
+          echo "" >> test-summary.md
+          
+          # Contar arquivos de relatório
+          SMOKE_REPORTS=$(find all-reports -name "*smoke*" -type f | wc -l)
+          REGRESSION_REPORTS=$(find all-reports -name "*regression*" -type f | wc -l)
+          MOBILE_REPORTS=$(find all-reports -name "*mobile*" -type f | wc -l)
+          SCREENSHOTS=$(find all-reports -name "*.png" -type f | wc -l)
+          
+          echo "## 📋 Resumo dos Testes" >> test-summary.md
+          echo "- **Testes Smoke:** $SMOKE_REPORTS relatórios gerados" >> test-summary.md
+          echo "- **Testes Regressão:** $REGRESSION_REPORTS relatórios gerados" >> test-summary.md
+          echo "- **Testes Mobile:** $MOBILE_REPORTS relatórios gerados" >> test-summary.md
+          echo "- **Screenshots:** $SCREENSHOTS capturas de tela" >> test-summary.md
+          echo "" >> test-summary.md
+          
+          # Verificar se houve falhas
+          if find all-reports -name "*.html" -exec grep -l "failed" {} \; | head -1; then
+            echo "❌ **Status:** Alguns testes falharam" >> test-summary.md
+          else
+            echo "✅ **Status:** Todos os testes passaram" >> test-summary.md
+          fi
+          
+          echo "" >> test-summary.md
+          echo "---" >> test-summary.md
+          echo "*Relatórios detalhados estão disponíveis nos artifacts do workflow.*" >> test-summary.md
+          
+      - name: Upload relatório consolidado
+        uses: actions/upload-artifact@v3
+        with:
+          name: consolidated-test-report
+          path: |
+            test-summary.md
+            all-reports/
+          retention-days: 30
+          
+      - name: Comentar no PR (se aplicável)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('test-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+
+  # Job para notificações
+  notify-results:
+    if: always() && (github.event_name == 'schedule' || contains(github.ref, 'main'))
+    needs: [smoke-tests, regression-tests, mobile-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determinar status
+        id: status
+        run: |
+          if [[ "${{ needs.smoke-tests.result }}" == "success" && 
+                ("${{ needs.regression-tests.result }}" == "success" || "${{ needs.regression-tests.result }}" == "skipped") && 
+                ("${{ needs.mobile-tests.result }}" == "success" || "${{ needs.mobile-tests.result }}" == "skipped") ]]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "message=✅ Todos os testes E2E passaram com sucesso!" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "message=❌ Alguns testes E2E falharam. Verifique os logs." >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Log resultado
+        run: |
+          echo "${{ steps.status.outputs.message }}"
+          echo "Smoke Tests: ${{ needs.smoke-tests.result }}"
+          echo "Regression Tests: ${{ needs.regression-tests.result }}"
+          echo "Mobile Tests: ${{ needs.mobile-tests.result }}"

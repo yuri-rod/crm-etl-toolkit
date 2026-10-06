@@ -1,0 +1,22 @@
+# This file specifies files that are *not* uploaded to Google Cloud Platform
+# using gcloud. It follows the same syntax as .gitignore, with the addition of
+# "#!include" directives (which insert the entries of the given .gitignore-style
+# file at that point).
+#
+# For more information, run:
+#   $ gcloud topic gcloudignore
+
+# Exclude development files
+README.md
+netlify.toml
+
+# Exclude version control
+.git/
+.gitignore
+
+# Keep only static assets needed for hosting:
+# - index.html (main application)
+# - Images (*.png, *.svg, *.jpg)
+# - Static redirects (_redirects)
+
+# Include all other files by default - they are static assets

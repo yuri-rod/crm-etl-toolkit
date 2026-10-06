@@ -1,0 +1,5 @@
+nome,email,telefone,empresa,qualidade_lead,nome_length,empresa_cargo_length,has_linkedin,has_email,has_whatsapp,data_quality_score,qualidade_predita,confianca_predicao
+Roberto Silva,roberto@email.com,11555555555,Excel Corp,alta,13,10,0,1,1,2,Alta,0.85
+Fernanda Costa,fernanda@empresa.com,21444444444,Spreadsheet Ltd,baixa,14,15,0,1,0,2,Baixa,0.27
+Miguel Santos,miguel@tech.com,31333333333,Data Analytics,alta,13,14,0,1,0,2,Alta,0.75
+Carla Oliveira,carla@corp.com,41222222222,Business Solutions,baixa,14,18,0,1,0,2,Baixa,0.17

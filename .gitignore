@@ -1,0 +1,24 @@
+# Local staging provenance, never publish
+SOURCES.md
+MERGELOG.md
+
+# Forensic quarantine, local only
+broken/
+*.py.broken
+
+# Environment and secrets
+.env
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.pytest_cache/
+
+# OS and editors
+.DS_Store
+.vscode/
+.idea/

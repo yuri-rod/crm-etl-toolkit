@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Usuário - CRM TI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0f172a;
+            --accent-green: #059669;
+            --accent-blue: #2563eb;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --error-red: #ef4444;
+            --light-gray: #f8fafc;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --border-gray: #e2e8f0;
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+            --gradient-secondary: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header matching index.html */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo a {
+            display: block;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: contain;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo a:hover img {
+            opacity: 0.8;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-dark);
+            border: 2px solid var(--border-gray);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,154.7C672,160,768,192,864,197.3C960,203,1056,181,1152,165.3C1248,149,1344,139,1392,133.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            color: #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Content Area */
+        .content-area {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Navigation Sidebar */
+        .nav-sidebar {
+            position: static;
+            order: 2;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-gray);
+        }
+
+        .nav-sidebar h3 {
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .nav-sidebar ul {
+            list-style: none;
+        }
+
+        .nav-sidebar li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-sidebar a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+            display: block;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            padding-left: 1rem;
+        }
+
+        .nav-sidebar a:hover {
+            color: var(--accent-blue);
+            background: rgba(37, 99, 235, 0.05);
+            transform: translateX(4px);
+        }
+
+        /* Manual Content */
+        .manual-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-gray);
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section h2 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .section h3 {
+            color: var(--accent-blue);
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            margin-top: 2rem;
+            font-weight: 600;
+        }
+
+        .section h4 {
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            margin-top: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            text-align: justify;
+        }
+
+        .section ul, .section ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .section li {
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border-left: 4px solid var(--warning-orange);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+            border-left: 4px solid var(--success-green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Scoring Table */
+        .scoring-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .scoring-table th {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .scoring-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .scoring-table tr:nth-child(even) {
+            background: var(--light-gray);
+        }
+
+        .scoring-table tr:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        /* Status Badges */
+        .status-hot {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            color: #B91C1C;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-warm {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            color: #D97706;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-cold {
+            background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+            color: #1D4ED8;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+            color: #4B5563;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Step Numbers */
+        .step-number {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-right: 0.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--primary-blue);
+            color: #F9FAFB;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Mobile-First Responsive Design */
+        
+        /* Tablet and up */
+        @media (min-width: 768px) {
+            .content-grid {
+                grid-template-columns: 250px 1fr;
+                gap: 3rem;
+            }
+
+            .nav-sidebar {
+                position: sticky;
+                top: 120px;
+                order: initial;
+                padding: 2rem;
+            }
+
+            .manual-content {
+                padding: 3rem;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .content-area {
+                padding: 2rem;
+            }
+            
+            .nav {
+                padding: 1rem 2rem;
+            }
+            
+            .logo img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        /* Desktop and up */
+        @media (min-width: 1024px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .content-area {
+                padding: 3rem 2rem;
+            }
+            
+            .logo img {
+                width: 97px;
+                height: 97px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html">
+                    <img src="logo.png" alt="Logo" />
+                </a>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-secondary">
+                    Voltar ao Sistema
+                </a>
+                <a href="/" class="btn btn-primary">
+                    CRM Hub
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Manual do Usuário</h1>
+                <p>Sistema de Qualificação Inteligente de Leads - CRM ETL</p>
+            </div>
+        </section>
+
+        <div class="content-area">
+            <div class="content-grid">
+                <nav class="nav-sidebar">
+                    <h3>Navegação</h3>
+                    <ul>
+                        <li><a href="#overview">Visão Geral</a></li>
+                        <li><a href="#scoring">Sistema de Pontuação</a></li>
+                        <li><a href="#usage">Como Usar</a></li>
+                        <li><a href="#export">Exportação</a></li>
+                        <li><a href="#faq">Perguntas Frequentes</a></li>
+                    </ul>
+                </nav>
+
+                <div class="manual-content">
+                    <section id="overview" class="section">
+                        <h2>Visão Geral do Sistema</h2>
+                        
+                        <p>Sistema de qualificação automática de leads para colaboradores CRM. Avalia leads comerciais usando critérios padronizados e pontuação objetiva.</p>
+
+                        <h3>Objetivos Principais</h3>
+                        <ul>
+                            <li><strong>Automatização da Qualificação:</strong> Eliminar a análise manual subjetiva de leads</li>
+                            <li><strong>Padronização de Critérios:</strong> Aplicar critérios uniformes para todos os leads</li>
+                            <li><strong>Otimização de Tempo:</strong> Reduzir drasticamente o tempo de análise de leads</li>
+                            <li><strong>Identificação de Prioridades:</strong> Destacar leads com maior potencial de conversão</li>
+                            <li><strong>Melhoria na Conversão:</strong> Focar esforços comerciais nos leads mais qualificados</li>
+                        </ul>
+
+                        <h3>Características Técnicas</h3>
+                        <ul>
+                            <li>Processamento local (sem envio externo)</li>
+                            <li>Suporte CSV/Excel com detecção de encoding</li>
+                            <li>Sistema de pontuação de 0 a 100 pontos</li>
+                            <li>Classificação automática em 4 categorias de status</li>
+                            <li>Exportação profissional com formatação condicional</li>
+                            <li>Interface simples</li>
+                        </ul>
+
+                        <div class="highlight-box">
+                            <strong>Importante:</strong> Ferramenta interno CRM. Processamento local garante privacidade dos dados.
+                        </div>
+                    </section>
+
+                    <section id="scoring" class="section">
+                        <h2>Sistema de Pontuação e Qualificação</h2>
+
+                        <p>O sistema utiliza uma pontuação de 0 a 100 pontos, distribuída em quatro categorias principais, especialmente adaptada para o mercado brasileiro.</p>
+
+                        <h3>Categorias de Avaliação</h3>
+
+                        <h4>1. Validação de Dados Essenciais (30 pontos)</h4>
+                        <p>Esta categoria verifica a integridade e validade dos dados básicos necessários para contato comercial:</p>
+                        <ul>
+                            <li><strong>Email válido (10 pontos):</strong> Verificação de formato correto do email</li>
+                            <li><strong>Nome da empresa (8 pontos):</strong> Presença e qualidade da informação da empresa</li>
+                            <li><strong>Nome do contato (7 pontos):</strong> Identificação clara do responsável</li>
+                            <li><strong>Telefone válido (5 pontos):</strong> Número de telefone com pelo menos 10 dígitos</li>
+                        </ul>
+
+                        <h4>2. Qualidade dos Dados (25 pontos)</h4>
+                        <p>Avalia a qualidade e confiabilidade das informações fornecidas:</p>
+                        <ul>
+                            <li><strong>CPF válido (8 pontos):</strong> Validação de formato e estrutura do CPF</li>
+                            <li><strong>CNPJ válido (10 pontos):</strong> Validação de formato e estrutura do CNPJ (maior peso por indicar pessoa jurídica)</li>
+                            <li><strong>Endereço completo (4 pontos):</strong> Presença de informações de endereço detalhadas</li>
+                            <li><strong>Cidade identificada (3 pontos):</strong> Localização geográfica do lead</li>
+                        </ul>
+
+                        <h4>3. Indicadores de Engajamento (25 pontos)</h4>
+                        <p>Analisa o potencial comercial e capacidade financeira do lead:</p>
+                        <ul>
+                            <li><strong>Faturamento/Receita:</strong>
+                                <ul>
+                                    <li>R$ 1.000.000+ = 15 pontos (Grande empresa)</li>
+                                    <li>R$ 500.000+ = 12 pontos (Média-grande empresa)</li>
+                                    <li>R$ 100.000+ = 8 pontos (Média empresa)</li>
+                                    <li>Acima de R$ 0 = 4 pontos (Pequena empresa)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Número de Funcionários:</strong>
+                                <ul>
+                                    <li>100+ funcionários = 6 pontos</li>
+                                    <li>50+ funcionários = 4 pontos</li>
+                                    <li>10+ funcionários = 2 pontos</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <h4>4. Dados de Interação e Timing (20 pontos)</h4>
+                        <p>Considera a recência e relevância temporal do lead:</p>
+                        <ul>
+                            <li><strong>Última interação há 7 dias ou menos:</strong> 12 pontos (Lead quente)</li>
+                            <li><strong>Última interação há 30 dias ou menos:</strong> 8 pontos (Lead morno)</li>
+                            <li><strong>Última interação há 90 dias ou menos:</strong> 4 pontos (Lead frio)</li>
+                            <li><strong>Mais de 90 dias:</strong> 0 pontos + aviso de "LEAD_ANTIGO"</li>
+                        </ul>
+
+                        <h3>Sistema de Classificação por Status</h3>
+
+                        <table class="scoring-table">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Pontuação</th>
+                                    <th>Descrição</th>
+                                    <th>Ação Recomendada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="status-hot">HOT</span></td>
+                                    <td>80-100 pontos</td>
+                                    <td>Leads qualificados com dados completos</td>
+                                    <td>Contatar imediatamente - prioridade máxima</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-warm">WARM</span></td>
+                                    <td>60-79 pontos</td>
+                                    <td>Leads qualificados com boa qualidade de dados e potencial comercial</td>
+                                    <td>Acompanhar de perto - incluir em campanhas prioritárias</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-cold">COLD</span></td>
+                                    <td>40-59 pontos</td>
+                                    <td>Leads com potencial mas necessitando de nutrição e qualificação adicional</td>
+                                    <td>Incluir em campanhas de nutrição - análise posterior</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-inactive">INACTIVE</span></td>
+                                    <td>0-39 pontos</td>
+                                    <td>Leads com qualidade insuficiente ou dados incompletos</td>
+                                    <td>Revisão manual necessária - baixa prioridade</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="warning-box">
+                            <strong>Avisos de Validação:</strong> O sistema identifica automaticamente problemas como EMAIL_INVÁLIDO, EMPRESA_FALTANDO, CONTATO_FALTANDO, LEAD_ANTIGO, e POSSÍVEL_DUPLICATA, permitindo ação corretiva imediata.
+                        </div>
+                    </section>
+
+                    <section id="usage" class="section">
+                        <h2>Como Usar o Sistema</h2>
+
+                        <h3>Passo a Passo Completo</h3>
+
+                        <h4><span class="step-number">1</span>Preparação do Arquivo</h4>
+                        <p>Antes de usar o sistema, certifique-se de que seu arquivo de leads esteja em formato CSV ou Excel (.xlsx). O sistema aceita qualquer estrutura de colunas, mas funciona melhor quando os dados incluem:</p>
+                        <ul>
+                            <li>Email ou E-mail</li>
+                            <li>Empresa ou Company</li>
+                            <li>Nome, Contato ou Contact</li>
+                            <li>Telefone ou Phone</li>
+                            <li>CPF ou CNPJ</li>
+                            <li>Endereço e Cidade</li>
+                            <li>Faturamento, Receita ou Revenue</li>
+                            <li>Funcionários ou Employees</li>
+                            <li>Setor, Indústria ou Industry</li>
+                        </ul>
+
+                        <div class="highlight-box">
+                            <strong>Flexibilidade de Colunas:</strong> Reconhece variações nos nomes das colunas automaticamente.
+                        </div>
+
+                        <h4><span class="step-number">2</span>Upload do Arquivo</h4>
+                        <p>Na tela principal, você pode carregar seu arquivo de duas formas:</p>
+                        <ul>
+                            <li><strong>Arrastar e soltar:</strong> Arraste o arquivo diretamente para a área de upload</li>
+                            <li><strong>Botão de seleção:</strong> Clique em "Escolher arquivo" e selecione do seu computador</li>
+                        </ul>
+                        <p>O sistema processará automaticamente o arquivo, detectando o encoding correto e analisando a estrutura dos dados.</p>
+
+                        <h4><span class="step-number">3</span>Seleção de Colunas</h4>
+                        <p>Após o upload, o sistema exibe todas as colunas identificadas. Você pode:</p>
+                        <ul>
+                            <li>Selecionar quais colunas incluir no processamento</li>
+                            <li>Visualizar o tipo de dado identificado automaticamente</li>
+                            <li>Ver a qualidade estimada de cada coluna</li>
+                        </ul>
+                        <p>Esta seleção permanece ativa até que você escolha outras colunas ou carregue um novo arquivo.</p>
+
+                        <h4><span class="step-number">4</span>Processamento dos Dados</h4>
+                        <p>Clique no botão "Processar Dados" para iniciar a análise. O sistema mostrará o progresso em tempo real através de 5 etapas:</p>
+                        <ol>
+                            <li><strong>Upload:</strong> Confirmação do carregamento dos dados</li>
+                            <li><strong>Mapeamento:</strong> Identificação e mapeamento das colunas</li>
+                            <li><strong>Validação:</strong> Verificação da qualidade dos dados</li>
+                            <li><strong>Processamento:</strong> Aplicação do algoritmo de pontuação</li>
+                            <li><strong>Exportação:</strong> Preparação dos resultados para download</li>
+                        </ol>
+
+                        <div class="success-box">
+                            <strong>Processamento Rápido:</strong> A análise completa geralmente leva menos de 30 segundos, mesmo para arquivos grandes.
+                        </div>
+
+                        <h4><span class="step-number">5</span>Análise dos Resultados</h4>
+                        <p>Após o processamento, o sistema exibe um dashboard executivo com:</p>
+                        <ul>
+                            <li><strong>Distribuição por Status:</strong> Quantos leads HOT, WARM, COLD e INACTIVE foram identificados</li>
+                            <li><strong>Métricas de Qualificação:</strong> Taxa de qualificação geral e pontuação média</li>
+                            <li><strong>Leads Prioritários:</strong> Número de leads com pontuação ≥ 90</li>
+                            <li><strong>Economia Estimada:</strong> Cálculo do tempo e recursos economizados</li>
+                        </ul>
+
+                        <h4><span class="step-number">6</span>Exportação dos Resultados</h4>
+                        <p>Clique em "Exportar Relatório" para gerar um arquivo Excel profissional com múltiplas abas organizadas.</p>
+                    </section>
+
+                    <section id="export" class="section">
+                        <h2>Exportação e Relatórios</h2>
+
+                        <p>O sistema gera relatórios profissionais em formato Excel com formatação condicional e múltiplas planilhas organizadas para diferentes finalidades.</p>
+
+                        <h3>Estrutura do Relatório Exportado</h3>
+
+                        <h4>Aba 1: Dados Processados</h4>
+                        <p>Contém todos os dados originais mais as colunas de enriquecimento:</p>
+                        <ul>
+                            <li><strong>Pontuação:</strong> Score de 0-100 com formatação condicional por cores</li>
+                            <li><strong>Status:</strong> Classificação HOT/WARM/COLD/INACTIVE</li>
+                            <li><strong>Segmento:</strong> Categoria de valor do lead</li>
+                            <li><strong>Tags:</strong> Tags automáticas descritivas</li>
+                            <li><strong>Avisos:</strong> Alertas de validação identificados</li>
+                            <li><strong>Data Processamento:</strong> Timestamp da análise</li>
+                            <li><strong>Todas as colunas originais:</strong> Dados completos preservados</li>
+                        </ul>
+
+                        <h4>Aba 2: Top Leads</h4>
+                        <p>Lista otimizada dos leads com pontuação ≥ 80, ordenados por score decrescente. Ideal para ação comercial imediata.</p>
+
+                        <h4>Aba 3: Avisos de Validação</h4>
+                        <p>Concentra todos os leads que apresentaram problemas de qualidade de dados, facilitando a correção em lote.</p>
+
+                        <h4>Aba 4: Métricas Executivas</h4>
+                        <p>Dashboard executivo com todas as métricas calculadas, incluindo distribuição por status, taxa de qualificação e economia estimada.</p>
+
+                        <div class="highlight-box">
+                            <strong>Para Gerentes Comerciais:</strong> Use a aba "Métricas Executivas" para avaliar a qualidade geral do lote e definir estratégias de abordagem.
+                        </div>
+
+                        <div class="success-box">
+                            <strong>Para Equipe de Vendas:</strong> Foque na aba "Top Leads" para priorizar contatos e na aba "Dados Processados" para informações completas.
+                        </div>
+                    </section>
+
+                    <section id="faq" class="section">
+                        <h2>Perguntas Frequentes</h2>
+
+                        <h4>O sistema envia meus dados para algum servidor externo?</h4>
+                        <p>Não. Todo o processamento é realizado localmente no seu navegador. Nenhuma informação é transmitida para servidores externos, mantendo privacidade dos dados.</p>
+
+                        <h4>Posso processar arquivos grandes?</h4>
+                        <p>Sim. O sistema foi otimizado para processar arquivos com milhares de leads rapidamente. O limite prático depende da capacidade do seu computador.</p>
+
+                        <h4>O que acontece se meu arquivo não tiver todas as colunas esperadas?</h4>
+                        <p>O sistema é flexível e adapta-se automaticamente à estrutura do seu arquivo. Leads com dados incompletos receberão pontuações correspondentes e avisos apropriados.</p>
+
+                        <h4>Posso exportar sem processar os dados?</h4>
+                        <p>Sim. Você pode exportar os dados originais a qualquer momento após o upload, mesmo sem executar o processamento de pontuação.</p>
+
+                        <h4>Como interpretar a pontuação de um lead?</h4>
+                        <p>A pontuação reflete a qualidade geral do lead considerando integridade de dados, potencial comercial e recência. Scores mais altos indicam maior probabilidade de conversão.</p>
+
+                        <div class="highlight-box">
+                            <strong>Suporte:</strong> Para dúvidas técnicas ou sugestões de melhorias, entre em contato com a equipe de tecnologia do CRM através dos canais internos.
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

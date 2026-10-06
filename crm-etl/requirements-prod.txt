@@ -1,0 +1,36 @@
+# CRM Production Requirements - Core System & FastAPI
+# Minimal dependencies for production deployment
+
+# === CORE DATA PROCESSING ===
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+sqlalchemy>=2.0.0
+requests>=2.31.0
+tqdm>=4.65.0
+joblib>=1.3.0
+
+# === API & WEB SERVER ===
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+# === ESSENTIAL DATA FORMATS ===
+pyarrow>=14.0.0
+openpyxl>=3.1.0
+duckdb>=0.9.0
+
+# === CONFIGURATION & UTILITIES ===
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+chardet>=5.2.0
+
+# === VALIDATION ===
+jsonschema>=4.19.0
+
+# === MONITORING (BASIC) ===
+psutil>=5.9.0
+
+# === SECURITY (ESSENTIAL) ===
+cryptography>=41.0.0
+bcrypt>=4.0.0

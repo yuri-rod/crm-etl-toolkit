@@ -1,0 +1,89 @@
+{
+  "model_type": "RandomForest",
+  "model_params": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "class_weight": "balanced",
+    "criterion": "gini",
+    "max_depth": 5,
+    "max_features": "sqrt",
+    "max_leaf_nodes": null,
+    "max_samples": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 100,
+    "n_jobs": null,
+    "oob_score": false,
+    "random_state": 42,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "feature_names": [
+    "nome_length",
+    "empresa_cargo_length",
+    "segmento_length",
+    "has_linkedin",
+    "has_cnpj",
+    "has_whatsapp",
+    "has_email",
+    "aniversario_mes",
+    "data_quality_score",
+    "estado_civil_encoded",
+    "estado_encoded",
+    "segmento_categoria_encoded",
+    "arquivo_fonte_encoded"
+  ],
+  "label_encoders": {
+    "estado_civil": [
+      "CASADA",
+      "CASADO",
+      "DIVORCIADA",
+      "DIVORCIADO",
+      "INDUSTRIA E COMERCIO",
+      "INDÚSTRIA DE ALIMENTOS SALGADOS E PÃES DE QUEIJO",
+      "MUITO BEM CASADO.",
+      "PALESTRAS E TREINAMENTOS MOTIVACIONAIS",
+      "SOLTEIRA",
+      "SOLTEIRO",
+      "SÓCIO FUNDADOR\"",
+      "TECNOLOGIA",
+      "UNIÃO ESTÁVEL"
+    ],
+    "estado": [
+      "GO",
+      "MG",
+      "OUTROS",
+      "PE",
+      "RJ",
+      "SP"
+    ],
+    "segmento_categoria": [
+      "COMERCIO",
+      "CONSTRUCAO",
+      "EDUCACAO",
+      "FINANCAS",
+      "OUTROS",
+      "TECNOLOGIA"
+    ],
+    "arquivo_fonte": [
+      "BASE JE01.CSV"
+    ]
+  },
+  "training_date": "2025-06-11T16:10:19.391574",
+  "training_samples": 36,
+  "feature_count": 13,
+  "target_classes": [
+    0,
+    1
+  ],
+  "data_processing_steps": [
+    "parse_csv_data",
+    "create_synthetic_features",
+    "label_encode_categorical",
+    "feature_selection",
+    "standard_scaling"
+  ]
+}

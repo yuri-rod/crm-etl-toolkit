@@ -1,0 +1,19 @@
+{
+    "training_date": "2025-08-11T16:53:47.567886",
+    "model_type": "RandomForestClassifier",
+    "numeric_features": [
+        "telefone",
+        "nome_length",
+        "empresa_cargo_length",
+        "has_linkedin",
+        "has_email",
+        "has_whatsapp",
+        "data_quality_score"
+    ],
+    "categorical_features": [
+        "nome",
+        "email",
+        "empresa"
+    ],
+    "target_column": "qualidade_lead"
+}

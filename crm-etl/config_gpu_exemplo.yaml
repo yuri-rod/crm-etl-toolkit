@@ -1,0 +1,177 @@
+# Configuração GPU para ETL com IA
+# CRM ETL
+
+# Configurações de Aceleração GPU
+gpu_acceleration:
+  # Habilitar aceleração GPU globalmente
+  enabled: true
+  
+  # Preferir GPU quando disponível
+  prefer_gpu: true
+  
+  # Fração da memória GPU a usar (0.1 = 10%, 0.8 = 80%)
+  memory_fraction: 0.7
+  
+  # Fallback para CPU se GPU falhar
+  fallback_to_cpu: true
+  
+  # Multiplicador de batch size para GPU (2.0 = dobrar batch size)
+  batch_size_multiplier: 2.0
+  
+  # Precisão numérica (float32, float16, mixed)
+  precision: "float32"
+
+# Configurações por Componente
+components:
+  
+  # AI Rule Generator
+  ai_rule_generator:
+    enable_gpu: true
+    large_dataset_threshold: 50000  # Usar GPU para datasets > 50k registros
+    gpu_operations: ['preprocess', 'transform']
+  
+  # Schema Drift Detector  
+  schema_drift_detector:
+    enable_gpu: true
+    large_dataset_threshold: 100000  # Usar GPU para datasets > 100k registros
+    sampling_enabled: true
+    max_sample_size: 500000
+  
+  # Intelligent Monitoring
+  intelligent_monitoring:
+    enable_gpu: true
+    anomaly_detection_gpu: true
+    model_training_threshold: 1000  # Usar GPU para > 1k amostras históricas
+  
+  # Data Processing
+  data_processing:
+    enable_cudf: true  # Habilitar CuDF para DataFrames
+    enable_cupy: true  # Habilitar CuPy para arrays
+    parallel_workers: 4  # Workers paralelos quando GPU indisponível
+
+# Configurações de Performance
+performance:
+  
+  # Monitoramento de recursos
+  resource_monitoring:
+    enabled: true
+    log_gpu_usage: true
+    memory_threshold_warning: 0.85  # Alertar quando > 85% da memória GPU
+    
+  # Otimizações automáticas
+  auto_optimization:
+    enabled: true
+    dynamic_batch_sizing: true
+    memory_cleanup: true
+    
+  # Benchmarking
+  benchmark:
+    enabled: true
+    compare_cpu_gpu: true
+    log_performance_metrics: true
+
+# Configurações de Compatibilidade
+compatibility:
+  
+  # Versões mínimas
+  minimum_versions:
+    cuda: "11.0"
+    pytorch: "1.12.0"
+    cupy: "10.0.0"
+    cudf: "22.02.0"
+  
+  # Fallbacks
+  fallback_strategies:
+    no_gpu: "cpu_optimized"
+    low_memory: "reduce_batch_size"
+    compatibility_issues: "disable_gpu"
+
+# Configurações de Desenvolvimento
+development:
+  
+  # Debug GPU
+  debug_gpu:
+    enabled: false
+    verbose_logging: false
+    profile_memory: false
+    track_allocations: false
+  
+  # Testes
+  testing:
+    run_gpu_tests: true
+    benchmark_on_startup: false
+    validate_installations: true
+
+# Configurações Específicas por Modelo de GPU
+gpu_specific:
+  
+  # NVIDIA RTX Series
+  rtx_series:
+    memory_fraction: 0.8
+    use_tensor_cores: true
+    mixed_precision: true
+  
+  # NVIDIA GTX Series  
+  gtx_series:
+    memory_fraction: 0.7
+    use_tensor_cores: false
+    mixed_precision: false
+  
+  # NVIDIA Quadro/Tesla
+  professional:
+    memory_fraction: 0.9
+    use_tensor_cores: true
+    mixed_precision: true
+    ecc_memory: true
+
+# Alertas e Notificações
+alerts:
+  
+  # Alertas de GPU
+  gpu_alerts:
+    memory_threshold: 0.9
+    temperature_threshold: 80  # Celsius
+    utilization_threshold: 0.95
+  
+  # Notificações
+  notifications:
+    gpu_errors: true
+    performance_degradation: true
+    fallback_to_cpu: true
+
+# Logs
+logging:
+  
+  # Log GPU específico
+  gpu_logging:
+    enabled: true
+    level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+    log_file: "gpu_acceleration.log"
+    
+  # Métricas
+  metrics:
+    track_gpu_usage: true
+    track_memory_usage: true
+    track_processing_times: true
+    export_to_prometheus: false
+
+# Configurações de Produção
+production:
+  
+  # Otimizações de produção
+  optimizations:
+    preload_models: true
+    cache_frequently_used: true
+    batch_operations: true
+    
+  # Monitoramento
+  monitoring:
+    health_checks: true
+    performance_alerts: true
+    automated_scaling: false
+    
+  # Manutenção
+  maintenance:
+    periodic_memory_cleanup: true
+    model_retraining_schedule: "weekly"
+    performance_benchmarks: "daily"
