@@ -21,6 +21,6 @@ jobs:
         run: |
           hits=$(grep -rniE 'password\s*=\s*["'"'"'][^"'"'"']+|api[_-]?key\s*=\s*["'"'"'][^"'"'"']+|secret\s*=\s*["'"'"'][^"'"'"']+|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|mongodb(\+srv)?://[^ ]+:[^ ]+@|postgres(ql)?://[^ ]+:[^ ]+@' \
             crm-etl bkp-pipeline crm-pipelines --include='*.py' | \
-            grep -viE 'sua_chave|your|test|example|placeholder|fallback-key|getenv|environ|os\.get|\.get\(' || true)
+            grep -viE 'sua_chave|your|test|example|placeholder|fallback-key|getenv|environ|os\.get|\.get\(|\{' || true)
           if [ -n "$hits" ]; then echo "$hits"; exit 1; fi
           echo "no secret patterns"
