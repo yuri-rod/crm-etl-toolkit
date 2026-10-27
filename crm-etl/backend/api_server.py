@@ -84,7 +84,7 @@ app_state = {
 app = FastAPI(
     title="CRM ETL API | CRM ETL",
     description="API para Sistema ETL Inteligente com IA Generativa",
-    version="1.0.0",
+    version="1.0.1",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -128,7 +128,7 @@ async def read_root():
     else:
         return JSONResponse({
             "message": "CRM ETL API | CRM ETL",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "status": "operational",
             "endpoints": ["/docs", "/pipeline/execute", "/ai/generate-rule"]
         })
@@ -457,7 +457,7 @@ async def health_check():
     return JSONResponse({
         'status': 'healthy',
         'service': 'CRM ETL API',
-        'version': '1.0.0',
+        'version': '1.0.1',
         'timestamp': datetime.now().isoformat()
     })
 
