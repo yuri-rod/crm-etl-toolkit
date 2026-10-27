@@ -39,9 +39,9 @@ class TestCleaningTransformationScoring:
     """Classe de testes para limpeza, transformação e scoring da UnifiedCRMPipeline."""
     
     @pytest.fixture
-    def pipeline(self):
+    def pipeline(self, tmp_path):
         """Fixture para criar uma instância da pipeline."""
-        return UnifiedCRMPipeline(enable_api_calls=False)  # Desabilitada por padrão
+        return UnifiedCRMPipeline(model_dir=tmp_path / "models", enable_api_calls=False)
     
     @pytest.fixture
     def sample_dataframe_with_duplicates(self):

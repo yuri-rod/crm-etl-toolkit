@@ -37,9 +37,9 @@ class TestUnifiedCRMPipelineLoadData:
     """Classe de testes para o método _load_data da UnifiedCRMPipeline."""
     
     @pytest.fixture
-    def pipeline(self):
+    def pipeline(self, tmp_path):
         """Fixture para criar uma instância da pipeline."""
-        return UnifiedCRMPipeline()
+        return UnifiedCRMPipeline(model_dir=tmp_path / "models", enable_api_calls=False)
     
     @pytest.fixture
     def test_data_dir(self):

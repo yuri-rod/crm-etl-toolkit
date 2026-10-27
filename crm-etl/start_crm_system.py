@@ -27,6 +27,8 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+PROJECT_ROOT = Path(__file__).resolve().parent
+BACKEND_DIR = PROJECT_ROOT / "backend"
 
 def print_crm_header():
     """Exibe header do CRM"""
@@ -72,40 +74,19 @@ def check_dependencies():
     return True
 
 def install_dependencies():
-    """Instala dependências do requirements.txt"""
+    """Instala as dependências locais declaradas em requirements-prod.txt."""
     logger.info("Instalando dependências...")
     
-    requirements_file = Path("requirements.txt")
+    requirements_file = PROJECT_ROOT / "requirements-prod.txt"
     if not requirements_file.exists():
-        logger.error("Arquivo requirements.txt não encontrado")
+        logger.error("Arquivo requirements-prod.txt não encontrado")
         return False
     
     try:
-        # Instalar dependências básicas primeiro
-        basic_deps = [
-            "pandas", "numpy", "scikit-learn", "sqlalchemy", 
-            "requests", "tqdm", "joblib", "fastapi", "uvicorn[standard]", 
-            "python-multipart", "openpyxl", "pyyaml", "psutil"
-        ]
-        
-        logger.info("Instalando dependências básicas...")
         subprocess.check_call([
-            sys.executable, "-m", "pip", "install", "--upgrade"
-        ] + basic_deps)
-        
-        logger.info("Dependências básicas instaladas")
-        
-        # Tentar instalar dependências opcionais
-        optional_deps = ["anthropic", "openai", "transformers"]
-        for dep in optional_deps:
-            try:
-                subprocess.check_call([
-                    sys.executable, "-m", "pip", "install", dep
-                ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                logger.info(f"{dep} - Instalado (opcional)")
-            except subprocess.CalledProcessError:
-                logger.warning(f"{dep} - Não instalado (opcional)")
-        
+            sys.executable, "-m", "pip", "install", "-r", str(requirements_file)
+        ])
+
         return True
         
     except subprocess.CalledProcessError as e:
@@ -118,15 +99,15 @@ def setup_environment():
     
     # Criar diretórios necessários
     directories = [
-        "BETA/backend/production_models",
-        "BETA/backend/logs",
+        "backend/production_models",
+        "backend/logs",
         "data/input",
         "data/output",
         "temp"
     ]
     
     for directory in directories:
-        Path(directory).mkdir(parents=True, exist_ok=True)
+        (PROJECT_ROOT / directory).mkdir(parents=True, exist_ok=True)
         logger.info(f"[DIR] Diretório criado: {directory}")
     
     # Verificar variáveis de ambiente para IA
@@ -154,15 +135,15 @@ def setup_environment():
 def check_backend_files():
     """Verifica se arquivos do backend existem"""
     backend_files = [
-        "BETA/backend/unificado.py",
-        "BETA/backend/api_server.py",
-        "BETA/backend/ai_rule_generator.py",
-        "BETA/www/index.html"
+        "backend/unificado.py",
+        "backend/api_server.py",
+        "backend/ai_rule_generator.py",
+        "backend/simple_inference.py"
     ]
     
     missing_files = []
     for file_path in backend_files:
-        if not Path(file_path).exists():
+        if not (PROJECT_ROOT / file_path).exists():
             missing_files.append(file_path)
     
     if missing_files:
@@ -182,11 +163,6 @@ def start_server(dev_mode=False, port=8000, host="127.0.0.1"):
     logger.info(f"   Documentação: http://{host}:{port}/docs")
     
     try:
-        # Mudar para diretório do backend
-        backend_dir = Path("BETA/backend")
-        if backend_dir.exists():
-            os.chdir(backend_dir)
-        
         # Comando uvicorn
         cmd = [
             sys.executable, "-m", "uvicorn",
@@ -200,12 +176,14 @@ def start_server(dev_mode=False, port=8000, host="127.0.0.1"):
         
         # Executar servidor
         logger.info("=" * 60)
-        subprocess.run(cmd)
+        return subprocess.run(cmd, cwd=BACKEND_DIR).returncode
         
     except KeyboardInterrupt:
         logger.info("[STOP] Servidor interrompido pelo usuário")
+        return 0
     except Exception as e:
         logger.error(f"[ERROR] Erro ao iniciar servidor: {e}")
+        return 1
 
 def run_tests():
     """Executa testes básicos do sistema"""
@@ -213,7 +191,7 @@ def run_tests():
     
     try:
         # Teste de importação
-        sys.path.insert(0, str(Path("BETA/backend")))
+        sys.path.insert(0, str(BACKEND_DIR))
         
         import unificado
         logger.info("[OK] Teste importação unificado.py - OK")
@@ -225,7 +203,7 @@ def run_tests():
         logger.info("[OK] Teste importação api_server.py - OK")
         
         # Teste instanciação
-        pipeline = unificado.UnifiedCRMPipeline()
+        pipeline = unificado.UnifiedCRMPipeline(model_dir=str(BACKEND_DIR / "production_models"))
         logger.info("[OK] Teste instanciação UnifiedCRMPipeline - OK")
         
         generator = ai_rule_generator.AIRuleGenerator()
@@ -315,7 +293,7 @@ def main():
     
     # Iniciar servidor
     if args.dev or args.prod:
-        start_server(dev_mode=args.dev, port=args.port, host=args.host)
+        return start_server(dev_mode=args.dev, port=args.port, host=args.host)
     else:
         logger.info("[INFO] Para iniciar o servidor:")
         logger.info("   python start_crm_system.py --dev   # Desenvolvimento")
@@ -328,4 +306,4 @@ def main():
         logger.info("   python start_crm_system.py --test")
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

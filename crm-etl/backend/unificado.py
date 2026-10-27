@@ -91,7 +91,10 @@ class UnifiedCRMPipeline:
             for encoding in encodings:
                 for sep in [',', ';', '|', '\t']:
                     try:
-                        df = pd.read_csv(file_path, sep=sep, encoding=encoding, low_memory=False)
+                        columns = pd.read_csv(file_path, sep=sep, encoding=encoding, nrows=0).columns
+                        # Tax identifiers are labels, not numbers; preserve leading zeroes.
+                        identifiers = {col: str for col in columns if 'CPF' in col.upper() or 'CNPJ' in col.upper()}
+                        df = pd.read_csv(file_path, sep=sep, encoding=encoding, low_memory=False, dtype=identifiers)
                         if len(df.columns) > 1:
                             logger.info(f"Arquivo CSV lido com sucesso usando o separador '{sep}' e encoding '{encoding}'.")
                             return df
@@ -119,8 +122,11 @@ class UnifiedCRMPipeline:
             df.dropna(subset=[dedup_column], inplace=True)
             
             # Ordena por data, se disponível, para manter o registro mais recente
-            if date_column and pd.api.types.is_datetime64_any_dtype(df[date_column]):
-                df = df.sort_values(by=date_column, ascending=False)
+            if date_column and not pd.api.types.is_numeric_dtype(df[date_column]):
+                df = df.sort_values(
+                    by=date_column, ascending=False, kind='stable',
+                    key=lambda values: pd.to_datetime(values, errors='coerce'),
+                )
             
             records_before = len(df)
             df.drop_duplicates(subset=[dedup_column], keep='first', inplace=True)
@@ -139,6 +145,11 @@ class UnifiedCRMPipeline:
         # Preenchimento de valores nulos em colunas de texto
         for col in df.select_dtypes(include=['object']).columns:
             df[col] = df[col].fillna('').astype(str)
+
+        for col in ('nome', 'empresa_cargo', 'linkedin', 'email', 'whatsapp'):
+            if col not in df.columns:
+                df[col] = ''
+            df[col] = df[col].astype('string').fillna('').astype(str)
 
         # Features baseadas em comprimento
         df['nome_length'] = df['nome'].str.len()
@@ -208,6 +219,7 @@ class UnifiedCRMPipeline:
         """Treina, avalia e salva o modelo de ML."""
         logger.info("Iniciando processo de treinamento do modelo...")
         self.target_column = target_column
+        df = df.copy()
 
         if self.target_column not in df.columns:
             raise ValueError(f"A coluna alvo '{self.target_column}' não foi encontrada no DataFrame.")
@@ -368,7 +380,9 @@ def main():
     except Exception as e:
         logger.error(f"Ocorreu um erro na pipeline: {e}")
         logger.exception("Traceback:")
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -25,9 +25,9 @@ class TestExportImportRoundTrip:
     """Testes para verificar a integridade dos dados em operações de round-trip."""
     
     @pytest.fixture
-    def pipeline(self):
+    def pipeline(self, tmp_path):
         """Fixture que cria uma instância da pipeline para testes."""
-        return UnifiedCRMPipeline(enable_api_calls=False)
+        return UnifiedCRMPipeline(model_dir=tmp_path / "models", enable_api_calls=False)
     
     @pytest.fixture
     def sample_data(self):

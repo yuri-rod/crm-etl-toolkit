@@ -20,6 +20,7 @@ import tempfile
 import traceback
 from datetime import datetime
 from pathlib import Path
+from uuid import uuid4
 from typing import Dict, List, Any, Optional, Union
 import pandas as pd
 import numpy as np
@@ -147,7 +148,15 @@ async def execute_pipeline(
     Executa pipeline ETL em background
     """
     
-    pipeline_id = f"pipeline_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    if mode not in {'train', 'batch-predict'}:
+        raise HTTPException(status_code=400, detail="Modo deve ser train ou batch-predict")
+    for filename in (file.filename, output_filename):
+        if not filename or filename in {'.', '..'} or '/' in filename or '\\' in filename:
+            raise HTTPException(status_code=400, detail="Use nomes de arquivo sem diretórios")
+    if Path(file.filename).suffix.lower() not in {'.csv', '.xlsx', '.xls'}:
+        raise HTTPException(status_code=400, detail="Envie um arquivo CSV ou Excel")
+
+    pipeline_id = f"pipeline_{uuid4().hex}"
     
     logger.info(f"🚀 CRM - Iniciando pipeline {pipeline_id}")
     logger.info(f"   Modo: {mode}")
@@ -460,30 +469,26 @@ async def cleanup_system():
     """
     
     try:
-        # Limpar pipelines antigas (mais de 1 dia)
         current_time = datetime.now()
         old_pipelines = []
         
         for pipeline_id, pipeline_data in list(app_state['pipelines'].items()):
-            if pipeline_data.get('start_time'):
+            if pipeline_data.get('status') in {'concluida', 'erro'} and pipeline_data.get('start_time'):
                 start_time = datetime.fromisoformat(pipeline_data['start_time'])
                 if (current_time - start_time).days > 1:
                     old_pipelines.append(pipeline_id)
         
-        for pipeline_id in old_pipelines:
-            del app_state['pipelines'][pipeline_id]
-        
-        # Limpar arquivos temporários
         temp_dir = Path(tempfile.gettempdir()) / "crm_etl"
         cleaned_files = 0
-        if temp_dir.exists():
-            for file_path in temp_dir.rglob("*"):
-                if file_path.is_file():
-                    try:
+        # Each job owns only its prefixed upload and result files. Active jobs
+        # and files without a corresponding expired terminal job stay intact.
+        for pipeline_id in old_pipelines:
+            for directory in (temp_dir, temp_dir / "output"):
+                for file_path in directory.glob(f"{pipeline_id}_*"):
+                    if file_path.is_file() or file_path.is_symlink():
                         file_path.unlink()
                         cleaned_files += 1
-                    except:
-                        pass
+            del app_state['pipelines'][pipeline_id]
         
         return JSONResponse({
             'success': True,

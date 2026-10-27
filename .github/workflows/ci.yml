@@ -2,6 +2,9 @@ name: ci
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   compile:
     runs-on: ubuntu-latest
@@ -15,15 +18,25 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - run: pip install pytest pandas numpy
-      # Only suite that runs standalone. Skipped: test_extractors (imports a
-      # nonexistent etl.* package), backend + frontend (need a live server).
-      - run: python -m pytest crm-etl/tests/test_etl_pipeline.py -q
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -r crm-etl/requirements-prod.txt pytest httpx
+      - name: Test local application and pipeline
+        run: >-
+          python -m pytest
+          crm-etl/tests/test_etl_pipeline.py
+          crm-etl/tests/test_local_workflow.py
+          crm-etl/www/tests/test_unified_crm_pipeline_load_data.py
+          crm-etl/www/tests/test_cleaning_transformation_scoring.py
+          crm-etl/www/tests/test_export_import_roundtrip.py -q
+      - name: Run synthetic example
+        run: python crm-etl/examples/offline_demo.py
 
   secrets:
     runs-on: ubuntu-latest
@@ -34,5 +47,5 @@ jobs:
           hits=$(grep -rniE 'password\s*=\s*["'"'"'][^"'"'"']+|api[_-]?key\s*=\s*["'"'"'][^"'"'"']+|secret\s*=\s*["'"'"'][^"'"'"']+|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|mongodb(\+srv)?://[^ ]+:[^ ]+@|postgres(ql)?://[^ ]+:[^ ]+@' \
             crm-etl bkp-pipeline crm-pipelines --include='*.py' | \
             grep -viE 'sua_chave|your|test|example|placeholder|fallback-key|getenv|environ|os\.get|\.get\(|\{' || true)
-          if [ -n "$hits" ]; then echo "$hits"; exit 1; fi
+          if [ -n "$hits" ]; then printf '%s\n' "$hits" | cut -d: -f1-2; exit 1; fi
           echo "no secret patterns"
