@@ -8,6 +8,6 @@
 - Keep numeric quality scores out of date detection and preserve the caller's labels during model training.
 - Return a nonzero status when a pipeline command fails and launch the maintained backend from any working directory.
 - Add a synthetic offline example, temporary test artifacts and CI coverage for the maintained application.
-- Report API version `1.0.1` consistently in OpenAPI, health and fallback root responses. The repository has no tagged release series.
+- Reuse the FastAPI application version (`1.0.2`) in OpenAPI, health and fallback root responses. The repository has no tagged release series.
 
 The changes above apply to the maintained CRM application. Historical experiments and the attributed weather ETL tutorial are unchanged.
