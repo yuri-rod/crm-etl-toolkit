@@ -10,6 +10,9 @@ broken/
 .env
 *.pem
 *.key
+*.secret
+*service-account*.json
+supabase_config.json
 
 # Python
 __pycache__/

@@ -8,18 +8,21 @@ import psycopg2
 from psycopg2.extras import Json, execute_batch
 from datetime import datetime
 import sys
+import os
 
-# Supabase connection configuration
+# Supabase connection configuration via environment variables
 SUPABASE_CONFIG = {
-    'host': 'aws-0-us-east-1.pooler.supabase.com',  # Using pooler connection
-    'port': '6543',  # Pooler port
-    'database': 'postgres',
-    'user': 'postgres.kihyqokxcvtmvqsgbocm',
-    'password': 'p0i7iTT8J1nyVxmZ'
+    'host': os.getenv('SUPABASE_HOST', 'aws-0-us-east-1.pooler.supabase.com'),
+    'port': os.getenv('SUPABASE_PORT', '6543'),
+    'database': os.getenv('SUPABASE_DB', 'postgres'),
+    'user': os.getenv('SUPABASE_USER', 'postgres.example_project_id'),
+    'password': os.getenv('SUPABASE_PASSWORD', '')
 }
 
 def connect_to_supabase():
     """Create connection to Supabase PostgreSQL"""
+    if not SUPABASE_CONFIG['password']:
+        raise ValueError("SUPABASE_PASSWORD environment variable must be set to connect to Supabase.")
     try:
         conn = psycopg2.connect(
             host=SUPABASE_CONFIG['host'],

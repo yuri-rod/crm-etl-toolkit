@@ -206,16 +206,16 @@ class FirestoreToSupabaseMigrator:
         print("Uncomment the insert_to_supabase lines to import to Supabase.")
 
 def main():
-    # Configuration
-    FIREBASE_CREDS = "smart-money-education-e3565532c51b.json"  # Your Firebase service account
+    # Configuration via environment variables
+    FIREBASE_CREDS = os.getenv("FIREBASE_CREDS_PATH", "firebase-service-account.json")
     
-    # Supabase connection configuration
+    # Supabase connection configuration via environment variables
     SUPABASE_CONFIG = {
-        'host': 'db.kihyqokxcvtmvqsgbocm.supabase.co',
-        'port': '5432',
-        'database': 'postgres',
-        'user': 'postgres',
-        'password': 'p0i7iTT8J1nyVxmZ'
+        'host': os.getenv('SUPABASE_HOST', 'db.example_project.supabase.co'),
+        'port': os.getenv('SUPABASE_PORT', '5432'),
+        'database': os.getenv('SUPABASE_DB', 'postgres'),
+        'user': os.getenv('SUPABASE_USER', 'postgres'),
+        'password': os.getenv('SUPABASE_PASSWORD', '')
     }
     
     # Check if Firebase credentials exist
